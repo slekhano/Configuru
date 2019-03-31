@@ -246,6 +246,7 @@ namespace configuru
 		}
 		Config(const char* str);
 		Config(std::string str);
+		Config(std::string_view str);
 
 		/** This constructor is a short-form for Config::object(...).
 		    We have no short-form for Config::array(...),
@@ -1411,6 +1412,11 @@ namespace configuru
 	Config::Config(std::string str) : _type(String)
 	{
 		_u.str = new std::string(move(str));
+	}
+
+	Config::Config(std::string_view str) : _type(String)
+	{
+		_u.str = new std::string(str.data(), str.size());
 	}
 
 	Config::Config(std::initializer_list<std::pair<std::string, Config>> values) : _type(Uninitialized)
