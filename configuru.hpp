@@ -1094,6 +1094,62 @@ namespace configuru
 		return options;
 	}
 
+	/// Returns FormatOptions that are describe a JSON file format.
+	inline FormatOptions make_safe_json_options()
+	{
+		FormatOptions options;
+
+		options.indentation              = "\t";
+		options.enforce_indentation      = false;
+
+		// Top file:
+		options.empty_file               = false;
+		options.implicit_top_object      = false;
+		options.implicit_top_array       = false;
+
+		// Comments:
+		options.single_line_comments     = false;
+		options.block_comments           = false;
+		options.nesting_block_comments   = false;
+
+		// Numbers:
+		options.inf                      = true;
+		options.nan                      = true;
+		options.hexadecimal_integers     = false;
+		options.binary_integers          = false;
+		options.unary_plus               = false;
+		options.distinct_floats          = true;
+
+		// Arrays
+		options.array_omit_comma         = false;
+		options.array_trailing_comma     = false;
+
+		// Objects:
+		options.identifiers_keys         = false;
+		options.object_separator_equal   = false;
+		options.allow_space_before_colon = true;
+		options.omit_colon_before_object = false;
+		options.object_omit_comma        = false;
+		options.object_trailing_comma    = false;
+		options.object_duplicate_keys    = false; // To be 100% JSON compatile, this should be true, but it is error prone.
+		options.object_align_values      = true;  // Looks better.
+
+		// Strings
+		options.str_csharp_verbatim      = false;
+		options.str_python_multiline     = false;
+		options.str_32bit_unicode        = false;
+		options.str_allow_tab            = false;
+
+		// Special
+		options.allow_macro              = false;
+
+		// When writing:
+		options.write_comments           = false;
+		options.sort_keys                = false;
+
+		return options;
+	}
+
 	/// Returns format options that allow us parsing most files.
 	inline FormatOptions make_forgiving_options()
 	{
@@ -1154,6 +1210,9 @@ namespace configuru
 
 	/// The JSON file format.
 	static const FormatOptions JSON      = make_json_options();
+
+	/// The SAFE_JSON file format.
+	static const FormatOptions SAFE_JSON = make_safe_json_options();
 
 	/// A very forgiving file format, when parsing stuff that is not strict.
 	static const FormatOptions FORGIVING = make_forgiving_options();
@@ -3406,17 +3465,17 @@ namespace configuru
 				if (!_options.inf) {
 					CONFIGURU_ONERROR("Can't encode infinity");
 				}
-				_out += "+inf";
+				_out += "Infinity";
 			} else if (val == -std::numeric_limits<double>::infinity()) {
 				if (!_options.inf) {
 					CONFIGURU_ONERROR("Can't encode negative infinity");
 				}
-				_out += "-inf";
+				_out += "-Infinity";
 			} else {
 				if (!_options.nan) {
 					CONFIGURU_ONERROR("Can't encode NaN");
 				}
-				_out += "+NaN";
+				_out += "NaN";
 			}
 		}
 
